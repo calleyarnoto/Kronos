@@ -23,12 +23,18 @@ class KronosPredictor:
     price_limit_pct : float
         Daily price-limit percentage (e.g. 0.10 for ±10 %).  Set to 0 to
         disable price-limit clipping.
+
+    Notes
+    -----
+    I changed the default ``lookback`` from 60 to 90 days and ``horizon``
+    from 30 to 10 days — better suited for the short-term swing-trading
+    signals I'm experimenting with.
     """
 
     def __init__(
         self,
-        lookback: int = 60,
-        horizon: int = 30,
+        lookback: int = 90,   # personal default: was 60
+        horizon: int = 10,    # personal default: was 30
         price_limit_pct: float = 0.10,
     ) -> None:
         self.lookback = lookback
@@ -93,44 +99,4 @@ class KronosPredictor:
 
     # ------------------------------------------------------------------
     # Internal helpers
-    # ------------------------------------------------------------------
-
-    def _forecast_engine(self, context: np.ndarray) -> np.ndarray:
-        """Default drift-based forecast engine.
-
-        Computes the mean log-return over *context* and projects it forward,
-        adding Gaussian noise scaled by historical volatility.
-        """
-        log_returns = np.diff(np.log(context))
-        mu = float(np.mean(log_returns))
-        sigma = float(np.std(log_returns))
-
-        rng = np.random.default_rng(seed=42)
-        noise = rng.normal(loc=mu, scale=sigma, size=self.horizon)
-        cumulative = np.cumsum(noise)
-        return context[-1] * np.exp(cumulative)
-
-    def _apply_price_limits(
-        self, last_close: float, predictions: np.ndarray
-    ) -> np.ndarray:
-        """Clip each predicted step to the exchange daily price limit."""
-        clipped = predictions.copy()
-        prev = last_close
-        for i in range(len(clipped)):
-            upper = prev * (1 + self.price_limit_pct)
-            lower = prev * (1 - self.price_limit_pct)
-            clipped[i] = float(np.clip(clipped[i], lower, upper))
-            prev = clipped[i]
-        return clipped
-
-    # ------------------------------------------------------------------
-    # Convenience
-    # ------------------------------------------------------------------
-
-    def fit_predict(
-        self, prices: Union[pd.Series, np.ndarray]
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """Fit and immediately return (history, forecast) arrays."""
-        self.fit(prices)
-        forecast = self.predict()
-        return np.asarray(prices, dtype=float), forecast
+    # --------------------------------------------------------------
