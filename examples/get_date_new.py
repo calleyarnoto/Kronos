@@ -16,6 +16,8 @@ def get_stock_market(stock_code):
         return '0'  # 深交所
     elif stock_code.startswith(('6', '9')):
         return '1'  # 上交所
+    elif stock_code.startswith(('4', '8')):
+        return '0'  # 北交所/新三板挂牌股票也走深交所通道
     else:
         return '1'  # 默认上交所
 
@@ -57,13 +59,12 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             'Accept': '*/*',
         }
 
-        # Sleep between 3 and 6 seconds to reduce risk of being rate-limited
-        # (increased from 2-4s after occasionally hitting rate limits during bulk downloads)
+        # Sleep between 3 and 6 seconds to reduce risk# (increased from 2-4s after occasionally hitting rate limits during bulk downloads)
         time.sleep(random.uniform(3, 6))
 
         response = requests.get(url, params=params, headers=headers, timeout=15)
 
-        print(f"API响应状态码: {response.status_code}")
+        print(f"API响应状态码")
 
         if response.status_code == 200:
             # 处理JSONP响应
@@ -72,8 +73,7 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             # 提取JSON数据（处理JSONP格式）
             if response_text.startswith('/**/'):
                 response_text = response_text[4:]
-
-            # 查找JSON数据的开始和结束位置
+数据的开始和结束位置
             start_idx = response_text.find('(')
             end_idx = response_text.rfind(')')
 
@@ -86,12 +86,7 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
                     return parse_kline_data_directly_all_history(response_text, stock_code)
             else:
                 print("❌ 无法找到JSON数据边界")
-                return None
-
-            print(f"API返回数据状态: {data.get('rc', 'N/A')}")
+                (f"API返回数据状态: {data.get('rc', 'N/A')}")
 
             if data and data.get('data') is not None:
-                klines = data['data'].get('klines', [])
-                print(f"获取到 {len(klines)} 条历史K线数据")
-
-              
+                klines = data[
