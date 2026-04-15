@@ -46,7 +46,7 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             'fqt': '1',  # 前复权
             'beg': start_date,
             'end': end_date,
-            'lmt': '50000',  # 增加限制数量以获取更多历史数据
+            'lmt': '100000',  # increased from 50000 to capture more history for older stocks
             'ut': 'fa5fd1943c7b386f172d6893dbfba10b',
             'cb': f'jQuery{random.randint(1000000, 9999999)}_{int(time.time() * 1000)}'
         }
