@@ -57,8 +57,8 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             'Accept': '*/*',
         }
 
-        # Increased sleep range slightly to be more polite to the API server
-        time.sleep(random.uniform(1.5, 3))
+        # Sleep between 2 and 4 seconds to reduce risk of being rate-limited
+        time.sleep(random.uniform(2, 4))
 
         response = requests.get(url, params=params, headers=headers, timeout=15)
 
@@ -94,8 +94,4 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
                 print(f"获取到 {len(klines)} 条历史K线数据")
 
                 if not klines:
-                    print("⚠️ K线数据为空")
-                    return None
-
-                # 解析数据
-            
+                    print("⚠
