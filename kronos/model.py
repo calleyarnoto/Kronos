@@ -29,13 +29,17 @@ class KronosPredictor:
     I changed the default ``lookback`` from 60 to 90 days and ``horizon``
     from 30 to 10 days — better suited for the short-term swing-trading
     signals I'm experimenting with.
+
+    Also set ``price_limit_pct`` default to 0.0 — I'm mostly working with
+    US equities which don't have hard daily price limits, so clipping was
+    silently distorting my forecast outputs.
     """
 
     def __init__(
         self,
         lookback: int = 90,   # personal default: was 60
         horizon: int = 10,    # personal default: was 30
-        price_limit_pct: float = 0.10,
+        price_limit_pct: float = 0.0,  # disabled by default; US equities have no hard limit
     ) -> None:
         self.lookback = lookback
         self.horizon = horizon
@@ -92,11 +96,4 @@ class KronosPredictor:
         predictions = self._forecast_engine(context)
 
         if self.price_limit_pct > 0:
-            predictions = self._apply_price_limits(
-                self._history[-1], predictions
-            )
-        return predictions
-
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # --------------------------------------------------------------
+            predictions = self._apply_price
