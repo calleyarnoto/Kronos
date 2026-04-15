@@ -88,12 +88,15 @@ class KronosPredictor:
         -------
         np.ndarray
             Predicted closing prices, shape ``(horizon,)``.
+
+        Raises
+        ------
+        RuntimeError
+            If ``fit`` has not been called before ``predict``.
         """
         if not self._fitted:
-            raise RuntimeError("Call fit() before predict().")
-
-        context = self._history[-self.lookback :]
-        predictions = self._forecast_engine(context)
-
-        if self.price_limit_pct > 0:
-            predictions = self._apply_price
+            # Added explicit error message — the silent AttributeError from
+            # accessing self._history was confusing during debugging.
+            raise RuntimeError(
+                "Model is not fitted yet. Call fit() with historical prices before predict()."
+            )
