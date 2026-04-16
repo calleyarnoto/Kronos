@@ -40,10 +40,12 @@ class KronosPredictor:
         lookback: int = 90,   # personal default: was 60
         horizon: int = 10,    # personal default: was 30
         price_limit_pct: float = 0.0,  # disabled by default; US equities have no hard limit
+        min_history_multiplier: float = 1.5,  # require at least lookback * 1.5 points for a more reliable fit
     ) -> None:
         self.lookback = lookback
         self.horizon = horizon
         self.price_limit_pct = price_limit_pct
+        self.min_history_multiplier = min_history_multiplier
         self._fitted = False
         self._history: Optional[np.ndarray] = None
 
@@ -66,9 +68,15 @@ class KronosPredictor:
         arr = np.asarray(prices, dtype=float)
         if arr.ndim != 1:
             raise ValueError("prices must be a 1-D array or Series.")
-        if len(arr) < self.lookback:
+        # Use min_history_multiplier so the model has a comfortable buffer of
+        # context beyond the bare minimum lookback window.  I found that fitting
+        # on exactly `lookback` points tends to overfit to recent noise.
+        min_required = int(self.lookback * self.min_history_multiplier)
+        if len(arr) < min_required:
             raise ValueError(
-                f"Need at least {self.lookback} data points, got {len(arr)}."
+                f"Need at least {min_required} data points "
+                f"(lookback={self.lookback} × {self.min_history_multiplier}), "
+                f"got {len(arr)}."
             )
         self._history = arr
         self._fitted = True
@@ -91,12 +99,4 @@ class KronosPredictor:
 
         Raises
         ------
-        RuntimeError
-            If ``fit`` has not been called before ``predict``.
-        """
-        if not self._fitted:
-            # Added explicit error message — the silent AttributeError from
-            # accessing self._history was confusing during debugging.
-            raise RuntimeError(
-                "Model is not fitted yet. Call fit() with historical prices before predict()."
-            )
+        Ru
