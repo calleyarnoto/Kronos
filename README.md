@@ -66,8 +66,6 @@
     <img src="figures/overview.png" alt="" align="center" width="700px" />
 </p>
 
-> **Personal note:** I'm exploring Kronos primarily for crypto market analysis (BTC/ETH daily candles).
-> Fine-tuning experiments are tracked in the `experiments/` directory of this fork.
-
-## ✨ Live Demo 
-We have set up a live demo to visualize Kronos
+> **Personal note:** I'm exploring Kronos primarily for crypto markets (BTC/ETH on Binance).
+> My focus is on 1h and 4h candles for swing trading signals. Fine-tuning experiments
+> are tracked in the `experiments/` directory I added to this fork.
