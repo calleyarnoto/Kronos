@@ -1,4 +1,4 @@
-<div align="center">
+# <div align="center">
   <h2><b>Kronos: A Foundation Model for the Language of Financial Markets </b></h2>
 </div>
 
@@ -68,4 +68,4 @@
 
 > **Personal note:** I'm exploring Kronos primarily for crypto markets (BTC/ETH on Binance).
 > My focus is on 1h and 4h candles for swing trading signals. Fine-tuning experiments
-> are tracked in the `experiments/` directory I added to this fork.
+> are tracked in the `experiments/` folder of this fork.
