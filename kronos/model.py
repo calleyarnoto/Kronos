@@ -40,7 +40,7 @@ class KronosPredictor:
         lookback: int = 90,   # personal default: was 60
         horizon: int = 10,    # personal default: was 30
         price_limit_pct: float = 0.0,  # disabled by default; US equities have no hard limit
-        min_history_multiplier: float = 1.5,  # require at least lookback * 1.5 points for a more reliable fit
+        min_history_multiplier: float = 2.0,  # bumped from 1.5 — I kept getting noisy fits near the boundary
     ) -> None:
         self.lookback = lookback
         self.horizon = horizon
@@ -82,21 +82,4 @@ class KronosPredictor:
         self._fitted = True
         return self
 
-    # ------------------------------------------------------------------
-    # Prediction
-    # ------------------------------------------------------------------
-
-    def predict(self) -> np.ndarray:
-        """Generate a price forecast for the next *horizon* steps.
-
-        Uses a simple drift + mean-reversion model as the default engine.
-        Override ``_forecast_engine`` in a subclass to plug in a custom model.
-
-        Returns
-        -------
-        np.ndarray
-            Predicted closing prices, shape ``(horizon,)``.
-
-        Raises
-        ------
-        Ru
+  
