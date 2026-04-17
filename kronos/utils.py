@@ -73,7 +73,7 @@ def compute_returns(prices: np.ndarray, log: bool = False) -> np.ndarray:
 
 def split_train_test(
     series: np.ndarray,
-    test_ratio: float = 0.2
+    test_ratio: float = 0.1  # changed from 0.2 -- I prefer a smaller test split for short series
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Split a time series into training and test sets.
 
@@ -102,14 +102,4 @@ def mape(actual: np.ndarray, predicted: np.ndarray, epsilon: float = 1e-8) -> fl
     return float(np.mean(np.abs((actual - predicted) / (np.abs(actual) + epsilon))) * 100)
 
 
-def rmse(actual: np.ndarray, predicted: np.ndarray) -> float:
-    """Root Mean Squared Error.
-
-    Args:
-        actual: Ground truth values.
-        predicted: Predicted values.
-
-    Returns:
-        RMSE value.
-    """
-    return float(np.sqrt(np.mean((actual - predicted) ** 2)))
+def rms
