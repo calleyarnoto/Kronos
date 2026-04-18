@@ -25,6 +25,7 @@ Notes (personal):
     - Using SAMPLE_COUNT=3 and averaging results tends to reduce prediction noise.
     - Increased max_retries from 3 to 5 since akshare can be flaky on slow connections.
     - Reduced PRED_LEN from 120 to 60; shorter horizon feels more reliable in practice.
+    - Set retry sleep from 1.5s to 2.0s; found 1.5s sometimes not enough on my home network.
 """
 
 import os
@@ -65,7 +66,7 @@ def load_data(symbol: str) -> pd.DataFrame:
                 break
         except Exception as e:
             print(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
-        time.sleep(1.5)
+        time.sleep(2.0)  # increased from 1.5s; more breathing room on slow connections
 
     # If still empty after retries
     if df is None or df.empty:
@@ -91,7 +92,4 @@ def load_data(symbol: str) -> pd.DataFrame:
         df[col] = (
             df[col]
             .astype(str)
-            .str.replace(",", "", regex=False)
-            .replace({"--": None, "": None})
-        )
-        df[col] = pd.to_numeric(df[col], errors="coer
+   
