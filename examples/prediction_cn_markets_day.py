@@ -24,6 +24,7 @@ Notes (personal):
     - Increased LOOKBACK from 400 to 480 to give the model more historical context.
     - Using SAMPLE_COUNT=3 and averaging results tends to reduce prediction noise.
     - Increased max_retries from 3 to 5 since akshare can be flaky on slow connections.
+    - Reduced PRED_LEN from 120 to 60; shorter horizon feels more reliable in practice.
 """
 
 import os
@@ -45,7 +46,7 @@ MODEL_PRETRAINED = "NeoQuasar/Kronos-base"
 DEVICE = "cpu"  # "cuda:0"
 MAX_CONTEXT = 512
 LOOKBACK = 480   # increased from 400 for more historical context
-PRED_LEN = 120
+PRED_LEN = 60    # reduced from 120; shorter horizon tends to be more reliable
 T = 1.0
 TOP_P = 0.9
 SAMPLE_COUNT = 3  # increased from 1; average multiple samples to reduce noise
@@ -93,9 +94,4 @@ def load_data(symbol: str) -> pd.DataFrame:
             .str.replace(",", "", regex=False)
             .replace({"--": None, "": None})
         )
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    # Fix invalid open values
-    open_bad = (df["open"] == 0) | (df["open"].isna())
-    if open_bad.any():
-        print(f"⚠️  Fixed {open_bad.sum()} in
+        df[col] = pd.to_numeric(df[col], errors="coer
