@@ -59,12 +59,13 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             'Accept': '*/*',
         }
 
-        # Sleep between 3 and 6 seconds to reduce risk# (increased from 2-4s after occasionally hitting rate limits during bulk downloads)
+        # Sleep between 3 and 6 seconds to reduce risk
+        # (increased from 2-4s after occasionally hitting rate limits during bulk downloads)
         time.sleep(random.uniform(3, 6))
 
         response = requests.get(url, params=params, headers=headers, timeout=15)
 
-        print(f"API响应状态码")
+        print(f"API响应状态码: {response.status_code}")
 
         if response.status_code == 200:
             # 处理JSONP响应
@@ -73,7 +74,8 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             # 提取JSON数据（处理JSONP格式）
             if response_text.startswith('/**/'):
                 response_text = response_text[4:]
-数据的开始和结束位置
+
+            # 找到数据的开始和结束位置
             start_idx = response_text.find('(')
             end_idx = response_text.rfind(')')
 
@@ -86,7 +88,7 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
                     return parse_kline_data_directly_all_history(response_text, stock_code)
             else:
                 print("❌ 无法找到JSON数据边界")
-                (f"API返回数据状态: {data.get('rc', 'N/A')}")
+                return None
 
             if data and data.get('data') is not None:
                 klines = data[
