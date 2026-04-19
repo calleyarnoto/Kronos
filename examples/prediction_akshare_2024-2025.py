@@ -86,16 +86,17 @@ def prepare_stock_data(csv_file_path, stock_code):
     return df
 
 
-def calculate_prediction_parameters(df, target_days=10):
+def calculate_prediction_parameters(df, target_days=7):
     """
     根据目标预测天数计算合适的参数
 
     参数:
     df: 股票数据DataFrame
-    target_days: 目标预测天数（自然日），默认10天
-                 注：原默认值为20天，后改为15天，个人测试后进一步缩短至10天。
-                 在A股市场短线波动较大的环境下，10天预测窗口误差更小，
-                 实际使用中15天以上准确率下降明显。
+    target_days: 目标预测天数（自然日），默认7天
+                 注：原默认值为20天，后改为15天，再改为10天，
+                 个人实测后进一步缩短至7天（约一周）。
+                 A股短线波动剧烈，7天窗口预测误差最小，
+                 超过10天后准确率明显下降，不建议用于中长线判断。
 
     返回:
     lookback: 回看期数
@@ -112,4 +113,4 @@ def calculate_prediction_parameters(df, target_days=10):
     # 设置回看期数为预测期数的2-3倍，但不超过数据总量的70%
     max_lookback = int(len(df) * 0.7)
     lookback = min(pred_trading_days * 2, max_lookback, len(df) - pred_trading_days)
-    pred_len = min(pred_tradin
+    pr
