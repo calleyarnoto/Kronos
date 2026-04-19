@@ -67,4 +67,5 @@
 </p>
 
 > **Personal note:** I'm exploring Kronos primarily for crypto market analysis (BTC/ETH on hourly timeframes).
-> My focus is on the forecasting capabilities — fine-tuning experiments are tracked in `experiments/crypto/`.
+> My focus is on the fine-tuning pipeline — specifically adapting the model to shorter lookback windows (128 candles)
+> since most retail crypto data APIs cap historical data retrieval.
